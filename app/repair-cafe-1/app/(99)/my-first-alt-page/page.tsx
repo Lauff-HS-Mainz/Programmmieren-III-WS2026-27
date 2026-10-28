@@ -1,6 +1,6 @@
 import Content from "./_components/content";
-import Footer from "./_components/footer";
-import Header from "./_components/header";
+import Footer from "../../../ui/components/footer";
+import Header from "../../../ui/components/header";
 
 export default function MyFirstAltPage() {
   return (
