@@ -9,5 +9,3 @@ export default function MyFirstPage() {
       <Content />
       <Footer />
     </div>
-  );
-}
