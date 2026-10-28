@@ -1,8 +1,13 @@
+import Content from "./_components/content";
+import Header from "./_components/header";
+import Footer from "./_components/footer";
+
 export default function ReceptionLandingPage() {
   return (
     <div>
-      <h1>Welcome to the Reception Landing Page</h1>
-      <p>This is a simple landing page for the reception area.</p>
+      <Header></Header>
+      <Content></Content>
+      <Footer></Footer>
     </div>
   );
 }
