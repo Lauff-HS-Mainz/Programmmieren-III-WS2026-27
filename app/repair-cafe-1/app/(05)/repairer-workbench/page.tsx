@@ -1,12 +1,10 @@
 import Header from './_components/header';
 import Content from './_components/content';
-import Input from './_components/input';
-export default function OurFirstPage() {
+export default function repairerWorkbench() {
   return (
     <div>
     <Header/>
     <Content/>
-    <Input/>
     </div>
   );
 }
