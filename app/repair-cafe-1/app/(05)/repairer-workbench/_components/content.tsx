@@ -7,7 +7,7 @@ export default function Content() {
     <main className="mx-auto max-w-3xl p-6">
       <section className="mb-6">
         <h2 className="mb-4 text-2xl font-bold">Alle Daten zum Auftrag von #Hans</h2>
-        <div className="space-y-4">
+        <div className="p-4 space-y-4">
           <DbOutput />
           <Input />
           <InputImageButton />

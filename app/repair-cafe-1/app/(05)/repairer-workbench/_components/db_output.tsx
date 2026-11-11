@@ -1,7 +1,7 @@
 export default function DbOutput() {
   return (
-    <section className="rounded-lg border border-blue-200 bg-gray-50 p-5">
-      <h3 className="mb-3 text-xl font-semibold text-blue-500">Auftragsdetails: </h3>
+    <section className="rounded-3xl border border-blue-200 bg-gray-50 p-5">
+      <h3 className="mb-3 text-xl font-semibold text-gray-800">Auftragsdetails: </h3>
 
       <p className="mb-2 text-gray-700">
         Gegenstand: <span className="font-semibold">Laptop</span>
