@@ -9,7 +9,6 @@ export default function firstPage() {
     <div>
       <Header/>
       <Content/>
-      <Input/>
       <Footer/>
     </div>
   );
