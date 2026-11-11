@@ -1,4 +1,5 @@
 import Header from "./_components/header";
+import Footer from "./_components/footer";
 
 export default function Page() {
 	return (
@@ -85,10 +86,8 @@ export default function Page() {
 					<p style={{ marginBottom: 0 }}>Kulturzentrum am Park · Eintritt frei · Keine Anmeldung nötig</p>
 				</div>
 			</section>
+			<Footer />
 
-			<footer id="kontakt" style={{ maxWidth: 1100, margin: "0 auto", padding: "28px 8%", fontSize: ".9rem" }}>
-				Fragen? Schreib uns an hallo@reparaturwerk.de
-			</footer>
 		</main>
 	);
 }
