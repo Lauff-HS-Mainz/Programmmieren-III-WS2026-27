@@ -8,12 +8,13 @@ export default function Content() {
       <section className="mb-6">
         <h2 className="mb-4 text-2xl font-bold">Alle Daten zum Auftrag von #Hans</h2>
         <div className="space-y-4">
+          <DbOutput />
           <Input />
           <InputImageButton />
         </div>
       </section>
 
-      <DbOutput />
+      
     </main>
   );
 }
