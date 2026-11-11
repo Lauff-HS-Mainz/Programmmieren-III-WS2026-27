@@ -1,3 +1,5 @@
+import Header from "./_components/header";
+
 export default function Page() {
 	return (
 		<main
@@ -8,6 +10,7 @@ export default function Page() {
 				fontFamily: "Arial, sans-serif",
 			}}
 		>
+			<Header />
 			<nav
 				style={{
 					display: "flex",
