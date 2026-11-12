@@ -1,0 +1,12 @@
+allowBuilds:
+  esbuild: true
+  msgpackr-extract: true
+  workerd: true
+minimumReleaseAgeExclude:
+  - "@prisma/*"
+overrides:
+  effect: "4.0.5"
+  "@effect/platform-bun": "4.0.5"
+  "@effect/platform-node": "4.0.5"
+  "@effect/platform-node-shared": "4.0.5"
+  "@effect/vitest": "4.0.5"

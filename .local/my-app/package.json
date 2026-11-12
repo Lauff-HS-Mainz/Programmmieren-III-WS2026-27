@@ -1,0 +1,45 @@
+{
+  "name": "my-app",
+  "private": true,
+  "packageManager": "pnpm@11.28.5",
+  "type": "module",
+  "engines": {
+    "node": "^22.18.0 || ^24.11.0 || >=26.0.0"
+  },
+  "scripts": {
+    "build": "tsdown",
+    "composer:deploy": "prisma deploy",
+    "composer:dev": "prisma dev",
+    "contract:emit": "prisma contract emit",
+    "db:init": "prisma db init",
+    "db:update": "prisma db update",
+    "db:verify": "prisma db verify",
+    "deploy": "pnpm run build && pnpm run composer:deploy",
+    "dev": "tsx watch src/index.ts",
+    "dev:composer": "pnpm run build && pnpm run composer:dev",
+    "migrate": "prisma db migrate",
+    "migration:plan": "prisma migration plan",
+    "migration:show": "prisma migration show",
+    "migration:status": "prisma migration status",
+    "skills:sync": "prisma skills sync || exit 0",
+    "start": "node dist/server.mjs",
+    "postinstall": "prisma skills sync || exit 0"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.5",
+    "@prisma/composer": "0.38.0",
+    "@prisma/composer-prisma-cloud": "0.38.0",
+    "@prisma/orm-postgres": "8.0.0-rc.23",
+    "alchemy": "2.0.0-beta.84",
+    "hono": "^4.13.13",
+    "temporal-polyfill": "^1.0.6"
+  },
+  "devDependencies": {
+    "@prisma/dev": "0.25.2",
+    "@types/node": "^26.6.5",
+    "prisma": "8.0.0-rc.33",
+    "tsdown": "^0.23.1",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3"
+  }
+}
