@@ -6,21 +6,26 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "prebuild": "prisma contract emit",
+    "db:start": "/usr/lib/postgresql/17/bin/pg_ctl -D ../../.local/postgres -l ../../.local/postgres/server.log -w start",
+    "db:stop": "/usr/lib/postgresql/17/bin/pg_ctl -D ../../.local/postgres -w stop"
   },
   "dependencies": {
     "@prisma/orm-postgres": "8.0.0-rc.24",
-    "next": "16.4.3",
+    "next": "16.4.6",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "temporal-polyfill": "^1.0.8"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
     "eslint": "^9",
-    "eslint-config-next": "16.4.3",
+    "eslint-config-next": "16.4.6",
     "prisma": "8.0.0-rc.34",
     "tailwindcss": "^4",
     "typescript": "^5"

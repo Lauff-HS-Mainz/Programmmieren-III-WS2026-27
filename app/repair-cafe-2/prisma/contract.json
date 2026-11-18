@@ -1,0 +1,4151 @@
+{
+  "schemaVersion": "1",
+  "targetFamily": "sql",
+  "target": "postgres",
+  "profileHash": "3916f444a8a17ad749191acf9e08dad97d1a327b88c2f1d45d12f240296aa8b2",
+  "roots": {
+    "Event": {
+      "model": "Event",
+      "namespace": "public"
+    },
+    "EventParticipation": {
+      "model": "EventParticipation",
+      "namespace": "public"
+    },
+    "Person": {
+      "model": "Person",
+      "namespace": "public"
+    },
+    "RepairAttempt": {
+      "model": "RepairAttempt",
+      "namespace": "public"
+    },
+    "RepairPhoto": {
+      "model": "RepairPhoto",
+      "namespace": "public"
+    },
+    "RepairRequest": {
+      "model": "RepairRequest",
+      "namespace": "public"
+    },
+    "RepairRequestLogEntry": {
+      "model": "RepairRequestLogEntry",
+      "namespace": "public"
+    },
+    "RepairRequestPhoto": {
+      "model": "RepairRequestPhoto",
+      "namespace": "public"
+    },
+    "RequiredSkill": {
+      "model": "RequiredSkill",
+      "namespace": "public"
+    },
+    "Skill": {
+      "model": "Skill",
+      "namespace": "public"
+    },
+    "VolunteerSkill": {
+      "model": "VolunteerSkill",
+      "namespace": "public"
+    }
+  },
+  "domain": {
+    "namespaces": {
+      "public": {
+        "enum": {
+          "EventStatus": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "IN_PREPARATION",
+                "value": "IN_PREPARATION"
+              },
+              {
+                "name": "ACTIVE",
+                "value": "ACTIVE"
+              }
+            ]
+          },
+          "RepairAttemptStatus": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "PLANNED",
+                "value": "PLANNED"
+              },
+              {
+                "name": "IN_PROGRESS",
+                "value": "IN_PROGRESS"
+              },
+              {
+                "name": "FINISHED",
+                "value": "FINISHED"
+              },
+              {
+                "name": "CANCELLED",
+                "value": "CANCELLED"
+              }
+            ]
+          },
+          "RepairOutcome": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "REPAIRED",
+                "value": "REPAIRED"
+              },
+              {
+                "name": "PARTIALLY_REPAIRED",
+                "value": "PARTIALLY_REPAIRED"
+              },
+              {
+                "name": "NOT_REPAIRABLE",
+                "value": "NOT_REPAIRABLE"
+              }
+            ]
+          },
+          "RepairRequestLogKind": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "CREATED",
+                "value": "CREATED"
+              },
+              {
+                "name": "SCHEDULED",
+                "value": "SCHEDULED"
+              },
+              {
+                "name": "VISITOR_NOTIFIED",
+                "value": "VISITOR_NOTIFIED"
+              },
+              {
+                "name": "NOTE",
+                "value": "NOTE"
+              },
+              {
+                "name": "DOCUMENTED_OUTSIDE_EVENT",
+                "value": "DOCUMENTED_OUTSIDE_EVENT"
+              },
+              {
+                "name": "WITHDRAWN",
+                "value": "WITHDRAWN"
+              },
+              {
+                "name": "REOPENED",
+                "value": "REOPENED"
+              },
+              {
+                "name": "PHOTO_UPLOAD_FAILED",
+                "value": "PHOTO_UPLOAD_FAILED"
+              },
+              {
+                "name": "PHOTOS_ADDED",
+                "value": "PHOTOS_ADDED"
+              },
+              {
+                "name": "PHOTO_DELETED",
+                "value": "PHOTO_DELETED"
+              },
+              {
+                "name": "RESCHEDULED",
+                "value": "RESCHEDULED"
+              },
+              {
+                "name": "UNSCHEDULED",
+                "value": "UNSCHEDULED"
+              }
+            ]
+          },
+          "Salutation": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "MR",
+                "value": "MR"
+              },
+              {
+                "name": "MS",
+                "value": "MS"
+              },
+              {
+                "name": "MX",
+                "value": "MX"
+              },
+              {
+                "name": "PREFER_NOT_TO_SAY",
+                "value": "PREFER_NOT_TO_SAY"
+              }
+            ]
+          },
+          "SkillLevel": {
+            "codecId": "pg/text@1",
+            "members": [
+              {
+                "name": "BASIC",
+                "value": "BASIC"
+              },
+              {
+                "name": "ADVANCED",
+                "value": "ADVANCED"
+              },
+              {
+                "name": "EXPERT",
+                "value": "EXPERT"
+              }
+            ]
+          }
+        },
+        "models": {
+          "Event": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "date": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/date-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "endTime": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/time-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "location": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "receptionistId": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "startTime": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/time-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "status": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "EventStatus",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              }
+            },
+            "relations": {
+              "participations": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "eventId"
+                  ]
+                },
+                "to": {
+                  "model": "EventParticipation",
+                  "namespace": "public"
+                }
+              },
+              "receptionist": {
+                "cardinality": "N:1",
+                "nullable": true,
+                "on": {
+                  "localFields": [
+                    "receptionistId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Person",
+                  "namespace": "public"
+                }
+              },
+              "repairAttempts": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "eventId"
+                  ]
+                },
+                "to": {
+                  "model": "RepairAttempt",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "date": {
+                  "column": "date"
+                },
+                "endTime": {
+                  "column": "endTime"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "location": {
+                  "column": "location"
+                },
+                "receptionistId": {
+                  "column": "receptionistId"
+                },
+                "startTime": {
+                  "column": "startTime"
+                },
+                "status": {
+                  "column": "status"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                }
+              },
+              "namespaceId": "public",
+              "table": "Event"
+            }
+          },
+          "EventParticipation": {
+            "fields": {
+              "available": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "eventId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "setById": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "volunteerId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "event": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "eventId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Event",
+                  "namespace": "public"
+                }
+              },
+              "setBy": {
+                "cardinality": "N:1",
+                "nullable": true,
+                "on": {
+                  "localFields": [
+                    "setById"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Person",
+                  "namespace": "public"
+                }
+              },
+              "volunteer": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "volunteerId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Person",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "available": {
+                  "column": "available"
+                },
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "eventId": {
+                  "column": "eventId"
+                },
+                "setById": {
+                  "column": "setById"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                },
+                "volunteerId": {
+                  "column": "volunteerId"
+                }
+              },
+              "namespaceId": "public",
+              "table": "EventParticipation"
+            }
+          },
+          "Person": {
+            "fields": {
+              "archivedAt": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "email": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "emailVerified": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
+              "firstName": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "isAdministrator": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
+              "isOrganizer": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
+              "isVolunteer": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
+              "lastName": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "phone": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "salutation": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "Salutation",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              }
+            },
+            "relations": {
+              "participations": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "volunteerId"
+                  ]
+                },
+                "to": {
+                  "model": "EventParticipation",
+                  "namespace": "public"
+                }
+              },
+              "participationsSet": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "setById"
+                  ]
+                },
+                "to": {
+                  "model": "EventParticipation",
+                  "namespace": "public"
+                }
+              },
+              "receptionistEvents": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "receptionistId"
+                  ]
+                },
+                "to": {
+                  "model": "Event",
+                  "namespace": "public"
+                }
+              },
+              "repairAttempts": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "repairerId"
+                  ]
+                },
+                "to": {
+                  "model": "RepairAttempt",
+                  "namespace": "public"
+                }
+              },
+              "repairLogEntries": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "authorId"
+                  ]
+                },
+                "to": {
+                  "model": "RepairRequestLogEntry",
+                  "namespace": "public"
+                }
+              },
+              "repairPhotos": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "authorId"
+                  ]
+                },
+                "to": {
+                  "model": "RepairPhoto",
+                  "namespace": "public"
+                }
+              },
+              "repairRequests": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "visitorId"
+                  ]
+                },
+                "to": {
+                  "model": "RepairRequest",
+                  "namespace": "public"
+                }
+              },
+              "volunteerSkills": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "volunteerId"
+                  ]
+                },
+                "to": {
+                  "model": "VolunteerSkill",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "archivedAt": {
+                  "column": "archivedAt"
+                },
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "email": {
+                  "column": "email"
+                },
+                "emailVerified": {
+                  "column": "emailVerified"
+                },
+                "firstName": {
+                  "column": "firstName"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "isAdministrator": {
+                  "column": "isAdministrator"
+                },
+                "isOrganizer": {
+                  "column": "isOrganizer"
+                },
+                "isVolunteer": {
+                  "column": "isVolunteer"
+                },
+                "lastName": {
+                  "column": "lastName"
+                },
+                "phone": {
+                  "column": "phone"
+                },
+                "salutation": {
+                  "column": "salutation"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                }
+              },
+              "namespaceId": "public",
+              "table": "Person"
+            }
+          },
+          "RepairAttempt": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "eventId": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "finishedAt": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "notes": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "outcome": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "RepairOutcome",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "plannedDuration": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "repairRequestId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "repairerId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "scheduledStart": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/time-string@1",
+                  "kind": "scalar"
+                }
+              },
+              "startedAt": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "kind": "scalar"
+                }
+              },
+              "status": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "RepairAttemptStatus",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "timeLocked": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              }
+            },
+            "relations": {
+              "event": {
+                "cardinality": "N:1",
+                "nullable": true,
+                "on": {
+                  "localFields": [
+                    "eventId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Event",
+                  "namespace": "public"
+                }
+              },
+              "logEntries": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "attemptId"
+                  ]
+                },
+                "to": {
+                  "model": "RepairRequestLogEntry",
+                  "namespace": "public"
+                }
+              },
+              "photos": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "repairAttemptId"
+                  ]
+                },
+                "to": {
+                  "model": "RepairPhoto",
+                  "namespace": "public"
+                }
+              },
+              "repairRequest": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "repairRequestId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "RepairRequest",
+                  "namespace": "public"
+                }
+              },
+              "repairer": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "repairerId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Person",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "eventId": {
+                  "column": "eventId"
+                },
+                "finishedAt": {
+                  "column": "finishedAt"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "notes": {
+                  "column": "notes"
+                },
+                "outcome": {
+                  "column": "outcome"
+                },
+                "plannedDuration": {
+                  "column": "plannedDuration"
+                },
+                "repairRequestId": {
+                  "column": "repairRequestId"
+                },
+                "repairerId": {
+                  "column": "repairerId"
+                },
+                "scheduledStart": {
+                  "column": "scheduledStart"
+                },
+                "startedAt": {
+                  "column": "startedAt"
+                },
+                "status": {
+                  "column": "status"
+                },
+                "timeLocked": {
+                  "column": "timeLocked"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                }
+              },
+              "namespaceId": "public",
+              "table": "RepairAttempt"
+            }
+          },
+          "RepairPhoto": {
+            "fields": {
+              "authorId": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "height": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "image": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bytea@1",
+                  "kind": "scalar"
+                }
+              },
+              "repairAttemptId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "sizeBytes": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "thumbnail": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bytea@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "width": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "author": {
+                "cardinality": "N:1",
+                "nullable": true,
+                "on": {
+                  "localFields": [
+                    "authorId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Person",
+                  "namespace": "public"
+                }
+              },
+              "repairAttempt": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "repairAttemptId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "RepairAttempt",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "authorId": {
+                  "column": "authorId"
+                },
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "height": {
+                  "column": "height"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "image": {
+                  "column": "image"
+                },
+                "repairAttemptId": {
+                  "column": "repairAttemptId"
+                },
+                "sizeBytes": {
+                  "column": "sizeBytes"
+                },
+                "thumbnail": {
+                  "column": "thumbnail"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                },
+                "width": {
+                  "column": "width"
+                }
+              },
+              "namespaceId": "public",
+              "table": "RepairPhoto"
+            }
+          },
+          "RepairRequest": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "description": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "item": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "visitorId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "waitingForSparePart": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
+              "withdrawn": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "photos": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "repairRequestId"
+                  ]
+                },
+                "to": {
+                  "model": "RepairRequestPhoto",
+                  "namespace": "public"
+                }
+              },
+              "repairAttempts": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "repairRequestId"
+                  ]
+                },
+                "to": {
+                  "model": "RepairAttempt",
+                  "namespace": "public"
+                }
+              },
+              "requiredSkills": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "repairRequestId"
+                  ]
+                },
+                "to": {
+                  "model": "RequiredSkill",
+                  "namespace": "public"
+                }
+              },
+              "visitor": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "visitorId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Person",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "description": {
+                  "column": "description"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "item": {
+                  "column": "item"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                },
+                "visitorId": {
+                  "column": "visitorId"
+                },
+                "waitingForSparePart": {
+                  "column": "waitingForSparePart"
+                },
+                "withdrawn": {
+                  "column": "withdrawn"
+                }
+              },
+              "namespaceId": "public",
+              "table": "RepairRequest"
+            }
+          },
+          "RepairRequestLogEntry": {
+            "fields": {
+              "attemptId": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "authorId": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "kind": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "RepairRequestLogKind",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "repairRequestId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "text": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              }
+            },
+            "relations": {
+              "addedPhotos": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "addedByLogEntryId"
+                  ]
+                },
+                "to": {
+                  "model": "RepairRequestPhoto",
+                  "namespace": "public"
+                }
+              },
+              "attempt": {
+                "cardinality": "N:1",
+                "nullable": true,
+                "on": {
+                  "localFields": [
+                    "attemptId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "RepairAttempt",
+                  "namespace": "public"
+                }
+              },
+              "author": {
+                "cardinality": "N:1",
+                "nullable": true,
+                "on": {
+                  "localFields": [
+                    "authorId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Person",
+                  "namespace": "public"
+                }
+              },
+              "repairRequest": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "repairRequestId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "RepairRequest",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "attemptId": {
+                  "column": "attemptId"
+                },
+                "authorId": {
+                  "column": "authorId"
+                },
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "kind": {
+                  "column": "kind"
+                },
+                "repairRequestId": {
+                  "column": "repairRequestId"
+                },
+                "text": {
+                  "column": "text"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                }
+              },
+              "namespaceId": "public",
+              "table": "RepairRequestLogEntry"
+            }
+          },
+          "RepairRequestPhoto": {
+            "fields": {
+              "addedByLogEntryId": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "height": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "image": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bytea@1",
+                  "kind": "scalar"
+                }
+              },
+              "position": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "repairRequestId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "sizeBytes": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "thumbnail": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bytea@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "width": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "addedByLogEntry": {
+                "cardinality": "N:1",
+                "nullable": true,
+                "on": {
+                  "localFields": [
+                    "addedByLogEntryId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "RepairRequestLogEntry",
+                  "namespace": "public"
+                }
+              },
+              "repairRequest": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "repairRequestId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "RepairRequest",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "addedByLogEntryId": {
+                  "column": "addedByLogEntryId"
+                },
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "height": {
+                  "column": "height"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "image": {
+                  "column": "image"
+                },
+                "position": {
+                  "column": "position"
+                },
+                "repairRequestId": {
+                  "column": "repairRequestId"
+                },
+                "sizeBytes": {
+                  "column": "sizeBytes"
+                },
+                "thumbnail": {
+                  "column": "thumbnail"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                },
+                "width": {
+                  "column": "width"
+                }
+              },
+              "namespaceId": "public",
+              "table": "RepairRequestPhoto"
+            }
+          },
+          "RequiredSkill": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "minimumLevel": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "SkillLevel",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "repairRequestId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "skillId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "suggested": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              }
+            },
+            "relations": {
+              "repairRequest": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "repairRequestId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "RepairRequest",
+                  "namespace": "public"
+                }
+              },
+              "skill": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "skillId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Skill",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "minimumLevel": {
+                  "column": "minimumLevel"
+                },
+                "repairRequestId": {
+                  "column": "repairRequestId"
+                },
+                "skillId": {
+                  "column": "skillId"
+                },
+                "suggested": {
+                  "column": "suggested"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                }
+              },
+              "namespaceId": "public",
+              "table": "RequiredSkill"
+            }
+          },
+          "Skill": {
+            "fields": {
+              "archived": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/bool@1",
+                  "kind": "scalar"
+                }
+              },
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "nameDe": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "nameEn": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "parentId": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "position": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/int4@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              }
+            },
+            "relations": {
+              "children": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "parentId"
+                  ]
+                },
+                "to": {
+                  "model": "Skill",
+                  "namespace": "public"
+                }
+              },
+              "parent": {
+                "cardinality": "N:1",
+                "nullable": true,
+                "on": {
+                  "localFields": [
+                    "parentId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Skill",
+                  "namespace": "public"
+                }
+              },
+              "requiredSkills": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "skillId"
+                  ]
+                },
+                "to": {
+                  "model": "RequiredSkill",
+                  "namespace": "public"
+                }
+              },
+              "volunteerSkills": {
+                "cardinality": "1:N",
+                "on": {
+                  "localFields": [
+                    "id"
+                  ],
+                  "targetFields": [
+                    "skillId"
+                  ]
+                },
+                "to": {
+                  "model": "VolunteerSkill",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "archived": {
+                  "column": "archived"
+                },
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "id": {
+                  "column": "id"
+                },
+                "nameDe": {
+                  "column": "nameDe"
+                },
+                "nameEn": {
+                  "column": "nameEn"
+                },
+                "parentId": {
+                  "column": "parentId"
+                },
+                "position": {
+                  "column": "position"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                }
+              },
+              "namespaceId": "public",
+              "table": "Skill"
+            }
+          },
+          "VolunteerSkill": {
+            "fields": {
+              "createdAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "level": {
+                "nullable": true,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                },
+                "valueSet": {
+                  "entityKind": "enum",
+                  "entityName": "SkillLevel",
+                  "namespaceId": "public",
+                  "plane": "domain"
+                }
+              },
+              "skillId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
+              "updatedAt": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "kind": "scalar",
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "volunteerId": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              }
+            },
+            "relations": {
+              "skill": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "skillId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Skill",
+                  "namespace": "public"
+                }
+              },
+              "volunteer": {
+                "cardinality": "N:1",
+                "nullable": false,
+                "on": {
+                  "localFields": [
+                    "volunteerId"
+                  ],
+                  "targetFields": [
+                    "id"
+                  ]
+                },
+                "to": {
+                  "model": "Person",
+                  "namespace": "public"
+                }
+              }
+            },
+            "storage": {
+              "fields": {
+                "createdAt": {
+                  "column": "createdAt"
+                },
+                "level": {
+                  "column": "level"
+                },
+                "skillId": {
+                  "column": "skillId"
+                },
+                "updatedAt": {
+                  "column": "updatedAt"
+                },
+                "volunteerId": {
+                  "column": "volunteerId"
+                }
+              },
+              "namespaceId": "public",
+              "table": "VolunteerSkill"
+            }
+          }
+        }
+      }
+    }
+  },
+  "storage": {
+    "namespaces": {
+      "public": {
+        "entries": {
+          "table": {
+            "Event": {
+              "checks": [
+                {
+                  "expression": "\"status\" IN ('IN_PREPARATION', 'ACTIVE')",
+                  "name": "Event_status_check_59ede762",
+                  "prefix": "Event_status_check"
+                },
+                {
+                  "expression": "\"endTime\" > \"startTime\"",
+                  "name": "event_end_after_start_ab64e255",
+                  "prefix": "event_end_after_start"
+                }
+              ],
+              "columns": {
+                "createdAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "date": {
+                  "codecId": "pg/date-string@1",
+                  "dataType": "pg/date",
+                  "nullable": false
+                },
+                "endTime": {
+                  "codecId": "pg/time-string@1",
+                  "dataType": "pg/time",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "location": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "receptionistId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "startTime": {
+                  "codecId": "pg/time-string@1",
+                  "dataType": "pg/time",
+                  "nullable": false
+                },
+                "status": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "default": {
+                    "kind": "literal",
+                    "value": "IN_PREPARATION"
+                  },
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "EventStatus",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "Event_receptionistId_idx_35eadc8c"
+                  },
+                  "onDelete": "setNull",
+                  "source": {
+                    "columns": [
+                      "receptionistId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Event"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Person"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "date"
+                  ],
+                  "name": "Event_date_idx_b4ca319c",
+                  "prefix": "Event_date_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "receptionistId"
+                  ],
+                  "name": "Event_receptionistId_idx_35eadc8c",
+                  "prefix": "Event_receptionistId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
+            "EventParticipation": {
+              "columns": {
+                "available": {
+                  "codecId": "pg/bool@1",
+                  "dataType": "pg/bool",
+                  "default": {
+                    "kind": "literal",
+                    "value": true
+                  },
+                  "nullable": false
+                },
+                "createdAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "eventId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "setById": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "volunteerId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "EventParticipation_eventId_idx_6a266d47"
+                  },
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "eventId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "EventParticipation"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Event"
+                  }
+                },
+                {
+                  "index": {
+                    "name": "EventParticipation_volunteerId_idx_b41cb3e4"
+                  },
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "volunteerId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "EventParticipation"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Person"
+                  }
+                },
+                {
+                  "index": {
+                    "name": "EventParticipation_setById_idx_924e0779"
+                  },
+                  "onDelete": "setNull",
+                  "source": {
+                    "columns": [
+                      "setById"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "EventParticipation"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Person"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "eventId"
+                  ],
+                  "name": "EventParticipation_eventId_idx_6a266d47",
+                  "prefix": "EventParticipation_eventId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "setById"
+                  ],
+                  "name": "EventParticipation_setById_idx_924e0779",
+                  "prefix": "EventParticipation_setById_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "volunteerId"
+                  ],
+                  "name": "EventParticipation_volunteerId_idx_b41cb3e4",
+                  "prefix": "EventParticipation_volunteerId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "eventId",
+                  "volunteerId"
+                ]
+              },
+              "uniques": []
+            },
+            "Person": {
+              "checks": [
+                {
+                  "expression": "\"salutation\" IN ('MR', 'MS', 'MX', 'PREFER_NOT_TO_SAY')",
+                  "name": "Person_salutation_check_aef801d9",
+                  "prefix": "Person_salutation_check"
+                },
+                {
+                  "expression": "NOT \"isAdministrator\" OR \"isVolunteer\"",
+                  "name": "person_administrator_is_volunteer_c91ec71f",
+                  "prefix": "person_administrator_is_volunteer"
+                },
+                {
+                  "expression": "\"archivedAt\" IS NULL OR NOT \"isVolunteer\"",
+                  "name": "person_archived_is_visitor_c8884f8a",
+                  "prefix": "person_archived_is_visitor"
+                },
+                {
+                  "expression": "\"email\" IS NULL OR \"email\" = lower(\"email\")",
+                  "name": "person_email_lower_case_63ba0435",
+                  "prefix": "person_email_lower_case"
+                },
+                {
+                  "expression": "char_length(\"firstName\") BETWEEN 1 AND 50",
+                  "name": "person_first_name_length_dd17b273",
+                  "prefix": "person_first_name_length"
+                },
+                {
+                  "expression": "char_length(\"lastName\") BETWEEN 1 AND 50",
+                  "name": "person_last_name_length_4e3a15bd",
+                  "prefix": "person_last_name_length"
+                },
+                {
+                  "expression": "NOT \"isOrganizer\" OR \"isVolunteer\"",
+                  "name": "person_organizer_is_volunteer_ff6480f9",
+                  "prefix": "person_organizer_is_volunteer"
+                }
+              ],
+              "columns": {
+                "archivedAt": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": true
+                },
+                "createdAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "email": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "emailVerified": {
+                  "codecId": "pg/bool@1",
+                  "dataType": "pg/bool",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nullable": false
+                },
+                "firstName": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "isAdministrator": {
+                  "codecId": "pg/bool@1",
+                  "dataType": "pg/bool",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nullable": false
+                },
+                "isOrganizer": {
+                  "codecId": "pg/bool@1",
+                  "dataType": "pg/bool",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nullable": false
+                },
+                "isVolunteer": {
+                  "codecId": "pg/bool@1",
+                  "dataType": "pg/bool",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nullable": false
+                },
+                "lastName": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "phone": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "salutation": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "Salutation",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "foreignKeys": [],
+              "indexes": [],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "email"
+                  ]
+                }
+              ]
+            },
+            "RepairAttempt": {
+              "checks": [
+                {
+                  "expression": "\"outcome\" IN ('REPAIRED', 'PARTIALLY_REPAIRED', 'NOT_REPAIRABLE')",
+                  "name": "RepairAttempt_outcome_check_ecbbbce2",
+                  "prefix": "RepairAttempt_outcome_check"
+                },
+                {
+                  "expression": "\"status\" IN ('PLANNED', 'IN_PROGRESS', 'FINISHED', 'CANCELLED')",
+                  "name": "RepairAttempt_status_check_080d6c7f",
+                  "prefix": "RepairAttempt_status_check"
+                },
+                {
+                  "expression": "\"eventId\" IS NULL OR (\"scheduledStart\" IS NOT NULL AND \"plannedDuration\" IS NOT NULL AND \"plannedDuration\" > 0)",
+                  "name": "repair_attempt_event_planned_a6a7da6a",
+                  "prefix": "repair_attempt_event_planned"
+                },
+                {
+                  "expression": "\"outcome\" IS NULL OR \"status\" = 'FINISHED'",
+                  "name": "repair_attempt_outcome_only_when_finished_f2c038d7",
+                  "prefix": "repair_attempt_outcome_only_when_finished"
+                },
+                {
+                  "expression": "\"eventId\" IS NOT NULL OR (\"scheduledStart\" IS NULL AND \"plannedDuration\" IS NULL AND \"finishedAt\" IS NOT NULL AND \"status\" = 'FINISHED' AND \"outcome\" IS NOT NULL)",
+                  "name": "repair_attempt_outside_event_documented_f6dbec1b",
+                  "prefix": "repair_attempt_outside_event_documented"
+                }
+              ],
+              "columns": {
+                "createdAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "eventId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "finishedAt": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": true
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "notes": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "outcome": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "RepairOutcome",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "plannedDuration": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": true
+                },
+                "repairRequestId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "repairerId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "scheduledStart": {
+                  "codecId": "pg/time-string@1",
+                  "dataType": "pg/time",
+                  "nullable": true
+                },
+                "startedAt": {
+                  "codecId": "pg/timestamptz-temporal@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": true
+                },
+                "status": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "default": {
+                    "kind": "literal",
+                    "value": "PLANNED"
+                  },
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "RepairAttemptStatus",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "timeLocked": {
+                  "codecId": "pg/bool@1",
+                  "dataType": "pg/bool",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nullable": false
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "RepairAttempt_repairRequestId_idx_ff06421e"
+                  },
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "repairRequestId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RepairAttempt"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RepairRequest"
+                  }
+                },
+                {
+                  "index": {
+                    "name": "RepairAttempt_eventId_idx_6a266d47"
+                  },
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "eventId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RepairAttempt"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Event"
+                  }
+                },
+                {
+                  "index": {
+                    "name": "RepairAttempt_repairerId_idx_e76dc88d"
+                  },
+                  "source": {
+                    "columns": [
+                      "repairerId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RepairAttempt"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Person"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "eventId"
+                  ],
+                  "name": "RepairAttempt_eventId_idx_6a266d47",
+                  "prefix": "RepairAttempt_eventId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "eventId",
+                    "scheduledStart"
+                  ],
+                  "name": "RepairAttempt_eventId_scheduledStart_idx_7b85020d",
+                  "prefix": "RepairAttempt_eventId_scheduledStart_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "repairRequestId"
+                  ],
+                  "name": "RepairAttempt_repairRequestId_idx_ff06421e",
+                  "prefix": "RepairAttempt_repairRequestId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "repairerId"
+                  ],
+                  "name": "RepairAttempt_repairerId_idx_e76dc88d",
+                  "prefix": "RepairAttempt_repairerId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
+            "RepairPhoto": {
+              "columns": {
+                "authorId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "createdAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "height": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "image": {
+                  "codecId": "pg/bytea@1",
+                  "dataType": "pg/bytea",
+                  "nullable": false
+                },
+                "repairAttemptId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "sizeBytes": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                },
+                "thumbnail": {
+                  "codecId": "pg/bytea@1",
+                  "dataType": "pg/bytea",
+                  "nullable": false
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "width": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "RepairPhoto_repairAttemptId_idx_df292cdd"
+                  },
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "repairAttemptId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RepairPhoto"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RepairAttempt"
+                  }
+                },
+                {
+                  "index": {
+                    "name": "RepairPhoto_authorId_idx_e47547ed"
+                  },
+                  "onDelete": "setNull",
+                  "source": {
+                    "columns": [
+                      "authorId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RepairPhoto"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Person"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "authorId"
+                  ],
+                  "name": "RepairPhoto_authorId_idx_e47547ed",
+                  "prefix": "RepairPhoto_authorId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "repairAttemptId"
+                  ],
+                  "name": "RepairPhoto_repairAttemptId_idx_df292cdd",
+                  "prefix": "RepairPhoto_repairAttemptId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
+            "RepairRequest": {
+              "columns": {
+                "createdAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "description": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "item": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "visitorId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "waitingForSparePart": {
+                  "codecId": "pg/bool@1",
+                  "dataType": "pg/bool",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nullable": false
+                },
+                "withdrawn": {
+                  "codecId": "pg/bool@1",
+                  "dataType": "pg/bool",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "RepairRequest_visitorId_idx_9d3ff46a"
+                  },
+                  "source": {
+                    "columns": [
+                      "visitorId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RepairRequest"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Person"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "visitorId"
+                  ],
+                  "name": "RepairRequest_visitorId_idx_9d3ff46a",
+                  "prefix": "RepairRequest_visitorId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
+            "RepairRequestLogEntry": {
+              "checks": [
+                {
+                  "expression": "\"kind\" IN ('CREATED', 'SCHEDULED', 'VISITOR_NOTIFIED', 'NOTE', 'DOCUMENTED_OUTSIDE_EVENT', 'WITHDRAWN', 'REOPENED', 'PHOTO_UPLOAD_FAILED', 'PHOTOS_ADDED', 'PHOTO_DELETED', 'RESCHEDULED', 'UNSCHEDULED')",
+                  "name": "RepairRequestLogEntry_kind_check_ba9d68ef",
+                  "prefix": "RepairRequestLogEntry_kind_check"
+                },
+                {
+                  "expression": "(\"kind\" IN ('NOTE', 'REOPENED') AND \"text\" IS NOT NULL) OR \"kind\" = 'WITHDRAWN' OR (\"kind\" NOT IN ('NOTE', 'REOPENED', 'WITHDRAWN') AND \"text\" IS NULL)",
+                  "name": "repair_log_text_by_kind_34366ad7",
+                  "prefix": "repair_log_text_by_kind"
+                },
+                {
+                  "expression": "\"text\" IS NULL OR char_length(\"text\") BETWEEN 1 AND 2000",
+                  "name": "repair_log_text_length_e639fb1c",
+                  "prefix": "repair_log_text_length"
+                }
+              ],
+              "columns": {
+                "attemptId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "authorId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "createdAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "kind": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "RepairRequestLogKind",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "repairRequestId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "text": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "RepairRequestLogEntry_repairRequestId_idx_ff06421e"
+                  },
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "repairRequestId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RepairRequestLogEntry"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RepairRequest"
+                  }
+                },
+                {
+                  "index": {
+                    "name": "RepairRequestLogEntry_authorId_idx_e47547ed"
+                  },
+                  "onDelete": "setNull",
+                  "source": {
+                    "columns": [
+                      "authorId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RepairRequestLogEntry"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Person"
+                  }
+                },
+                {
+                  "index": {
+                    "name": "RepairRequestLogEntry_attemptId_idx_94f50eb9"
+                  },
+                  "onDelete": "setNull",
+                  "source": {
+                    "columns": [
+                      "attemptId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RepairRequestLogEntry"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RepairAttempt"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "attemptId"
+                  ],
+                  "name": "RepairRequestLogEntry_attemptId_idx_94f50eb9",
+                  "prefix": "RepairRequestLogEntry_attemptId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "authorId"
+                  ],
+                  "name": "RepairRequestLogEntry_authorId_idx_e47547ed",
+                  "prefix": "RepairRequestLogEntry_authorId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "repairRequestId",
+                    "createdAt"
+                  ],
+                  "name": "RepairRequestLogEntry_repairRequestId_createdAt_idx_fa3a71ec",
+                  "prefix": "RepairRequestLogEntry_repairRequestId_createdAt_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "repairRequestId"
+                  ],
+                  "name": "RepairRequestLogEntry_repairRequestId_idx_ff06421e",
+                  "prefix": "RepairRequestLogEntry_repairRequestId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
+            "RepairRequestPhoto": {
+              "columns": {
+                "addedByLogEntryId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "createdAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "height": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "image": {
+                  "codecId": "pg/bytea@1",
+                  "dataType": "pg/bytea",
+                  "nullable": false
+                },
+                "position": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                },
+                "repairRequestId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "sizeBytes": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                },
+                "thumbnail": {
+                  "codecId": "pg/bytea@1",
+                  "dataType": "pg/bytea",
+                  "nullable": false
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "width": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "RepairRequestPhoto_repairRequestId_idx_ff06421e"
+                  },
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "repairRequestId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RepairRequestPhoto"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RepairRequest"
+                  }
+                },
+                {
+                  "index": {
+                    "name": "RepairRequestPhoto_addedByLogEntryId_idx_ab3d0e65"
+                  },
+                  "onDelete": "setNull",
+                  "source": {
+                    "columns": [
+                      "addedByLogEntryId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RepairRequestPhoto"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RepairRequestLogEntry"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "addedByLogEntryId"
+                  ],
+                  "name": "RepairRequestPhoto_addedByLogEntryId_idx_ab3d0e65",
+                  "prefix": "RepairRequestPhoto_addedByLogEntryId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "repairRequestId"
+                  ],
+                  "name": "RepairRequestPhoto_repairRequestId_idx_ff06421e",
+                  "prefix": "RepairRequestPhoto_repairRequestId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "repairRequestId",
+                    "position"
+                  ],
+                  "name": "RepairRequestPhoto_repairRequestId_position_idx_2b77b8c5",
+                  "prefix": "RepairRequestPhoto_repairRequestId_position_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
+            "RequiredSkill": {
+              "checks": [
+                {
+                  "expression": "\"minimumLevel\" IN ('BASIC', 'ADVANCED', 'EXPERT')",
+                  "name": "RequiredSkill_minimumLevel_check_54f43205",
+                  "prefix": "RequiredSkill_minimumLevel_check"
+                }
+              ],
+              "columns": {
+                "createdAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "minimumLevel": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "SkillLevel",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "repairRequestId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "skillId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "suggested": {
+                  "codecId": "pg/bool@1",
+                  "dataType": "pg/bool",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nullable": false
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "RequiredSkill_repairRequestId_idx_ff06421e"
+                  },
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "repairRequestId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RequiredSkill"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RepairRequest"
+                  }
+                },
+                {
+                  "index": {
+                    "name": "RequiredSkill_skillId_idx_6e19993d"
+                  },
+                  "onDelete": "restrict",
+                  "source": {
+                    "columns": [
+                      "skillId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "RequiredSkill"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Skill"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "repairRequestId"
+                  ],
+                  "name": "RequiredSkill_repairRequestId_idx_ff06421e",
+                  "prefix": "RequiredSkill_repairRequestId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "skillId"
+                  ],
+                  "name": "RequiredSkill_skillId_idx_6e19993d",
+                  "prefix": "RequiredSkill_skillId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "repairRequestId",
+                  "skillId"
+                ]
+              },
+              "uniques": []
+            },
+            "Skill": {
+              "checks": [
+                {
+                  "expression": "char_length(\"nameDe\") BETWEEN 1 AND 50",
+                  "name": "skill_name_de_length_955bc006",
+                  "prefix": "skill_name_de_length"
+                },
+                {
+                  "expression": "\"nameEn\" IS NULL OR char_length(\"nameEn\") BETWEEN 1 AND 50",
+                  "name": "skill_name_en_length_1cf36806",
+                  "prefix": "skill_name_en_length"
+                }
+              ],
+              "columns": {
+                "archived": {
+                  "codecId": "pg/bool@1",
+                  "dataType": "pg/bool",
+                  "default": {
+                    "kind": "literal",
+                    "value": false
+                  },
+                  "nullable": false
+                },
+                "createdAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "id": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "nameDe": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "nameEn": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "parentId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true
+                },
+                "position": {
+                  "codecId": "pg/int4@1",
+                  "dataType": "pg/int4",
+                  "nullable": false
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "Skill_parentId_idx_6a68f597"
+                  },
+                  "onDelete": "restrict",
+                  "source": {
+                    "columns": [
+                      "parentId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Skill"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Skill"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "parentId"
+                  ],
+                  "name": "Skill_parentId_idx_6a68f597",
+                  "prefix": "Skill_parentId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "parentId",
+                    "position"
+                  ],
+                  "name": "Skill_parentId_position_idx_230653f4",
+                  "prefix": "Skill_parentId_position_idx",
+                  "unique": false
+                },
+                {
+                  "expression": "COALESCE(\"parentId\", ''), \"nameDe\"",
+                  "name": "skill_name_unique_among_siblings_b0410a6c",
+                  "prefix": "skill_name_unique_among_siblings",
+                  "unique": true
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": []
+            },
+            "VolunteerSkill": {
+              "checks": [
+                {
+                  "expression": "\"level\" IN ('BASIC', 'ADVANCED', 'EXPERT')",
+                  "name": "VolunteerSkill_level_check_d9d63dbb",
+                  "prefix": "VolunteerSkill_level_check"
+                }
+              ],
+              "columns": {
+                "createdAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "level": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": true,
+                  "valueSet": {
+                    "entityKind": "valueSet",
+                    "entityName": "SkillLevel",
+                    "namespaceId": "public",
+                    "plane": "storage"
+                  }
+                },
+                "skillId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                },
+                "updatedAt": {
+                  "codecId": "pg/timestamptz-date@1",
+                  "dataType": "pg/timestamptz",
+                  "nullable": false,
+                  "typeParams": {
+                    "precision": 3
+                  }
+                },
+                "volunteerId": {
+                  "codecId": "pg/text@1",
+                  "dataType": "pg/text",
+                  "nullable": false
+                }
+              },
+              "foreignKeys": [
+                {
+                  "index": {
+                    "name": "VolunteerSkill_volunteerId_idx_b41cb3e4"
+                  },
+                  "onDelete": "cascade",
+                  "source": {
+                    "columns": [
+                      "volunteerId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "VolunteerSkill"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Person"
+                  }
+                },
+                {
+                  "index": {
+                    "name": "VolunteerSkill_skillId_idx_6e19993d"
+                  },
+                  "onDelete": "restrict",
+                  "source": {
+                    "columns": [
+                      "skillId"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "VolunteerSkill"
+                  },
+                  "target": {
+                    "columns": [
+                      "id"
+                    ],
+                    "namespaceId": "public",
+                    "tableName": "Skill"
+                  }
+                }
+              ],
+              "indexes": [
+                {
+                  "columns": [
+                    "skillId"
+                  ],
+                  "name": "VolunteerSkill_skillId_idx_6e19993d",
+                  "prefix": "VolunteerSkill_skillId_idx",
+                  "unique": false
+                },
+                {
+                  "columns": [
+                    "volunteerId"
+                  ],
+                  "name": "VolunteerSkill_volunteerId_idx_b41cb3e4",
+                  "prefix": "VolunteerSkill_volunteerId_idx",
+                  "unique": false
+                }
+              ],
+              "primaryKey": {
+                "columns": [
+                  "volunteerId",
+                  "skillId"
+                ]
+              },
+              "uniques": []
+            }
+          },
+          "valueSet": {
+            "EventStatus": {
+              "kind": "valueSet",
+              "values": [
+                "IN_PREPARATION",
+                "ACTIVE"
+              ]
+            },
+            "RepairAttemptStatus": {
+              "kind": "valueSet",
+              "values": [
+                "PLANNED",
+                "IN_PROGRESS",
+                "FINISHED",
+                "CANCELLED"
+              ]
+            },
+            "RepairOutcome": {
+              "kind": "valueSet",
+              "values": [
+                "REPAIRED",
+                "PARTIALLY_REPAIRED",
+                "NOT_REPAIRABLE"
+              ]
+            },
+            "RepairRequestLogKind": {
+              "kind": "valueSet",
+              "values": [
+                "CREATED",
+                "SCHEDULED",
+                "VISITOR_NOTIFIED",
+                "NOTE",
+                "DOCUMENTED_OUTSIDE_EVENT",
+                "WITHDRAWN",
+                "REOPENED",
+                "PHOTO_UPLOAD_FAILED",
+                "PHOTOS_ADDED",
+                "PHOTO_DELETED",
+                "RESCHEDULED",
+                "UNSCHEDULED"
+              ]
+            },
+            "Salutation": {
+              "kind": "valueSet",
+              "values": [
+                "MR",
+                "MS",
+                "MX",
+                "PREFER_NOT_TO_SAY"
+              ]
+            },
+            "SkillLevel": {
+              "kind": "valueSet",
+              "values": [
+                "BASIC",
+                "ADVANCED",
+                "EXPERT"
+              ]
+            }
+          }
+        },
+        "id": "public",
+        "kind": "postgres-schema"
+      }
+    },
+    "storageHash": "337da43538e962c4c4b85e2fc2218b38289cd2ad9899ce9787ab7175eebba8ce"
+  },
+  "execution": {
+    "executionHash": "4a67570d9453b382ba1e989fff6300c7e7ab5871e36fd2ba59adae462b3767c3",
+    "mutations": {
+      "defaults": [
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "Event",
+            "field": "createdAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv7",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "Event",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "Event",
+            "field": "updatedAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "EventParticipation",
+            "field": "createdAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "EventParticipation",
+            "field": "updatedAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "Person",
+            "field": "createdAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv7",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "Person",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "Person",
+            "field": "updatedAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "RepairAttempt",
+            "field": "createdAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv7",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "RepairAttempt",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "RepairAttempt",
+            "field": "updatedAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "RepairPhoto",
+            "field": "createdAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv7",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "RepairPhoto",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "RepairPhoto",
+            "field": "updatedAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "RepairRequest",
+            "field": "createdAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv7",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "RepairRequest",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "RepairRequest",
+            "field": "updatedAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "RepairRequestLogEntry",
+            "field": "createdAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv7",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "RepairRequestLogEntry",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "RepairRequestLogEntry",
+            "field": "updatedAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "RepairRequestPhoto",
+            "field": "createdAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv7",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "RepairRequestPhoto",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "RepairRequestPhoto",
+            "field": "updatedAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "RequiredSkill",
+            "field": "createdAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "RequiredSkill",
+            "field": "updatedAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "Skill",
+            "field": "createdAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv7",
+            "kind": "generator"
+          },
+          "ref": {
+            "entry": "Skill",
+            "field": "id",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "Skill",
+            "field": "updatedAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "VolunteerSkill",
+            "field": "createdAt",
+            "namespace": "public"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "onUpdate": {
+            "id": "timestampNow",
+            "kind": "generator",
+            "params": {
+              "precision": 3
+            }
+          },
+          "ref": {
+            "entry": "VolunteerSkill",
+            "field": "updatedAt",
+            "namespace": "public"
+          }
+        }
+      ]
+    }
+  },
+  "capabilities": {
+    "postgres": {
+      "distinctOn": true,
+      "forKeyShare": true,
+      "forNoKeyUpdate": true,
+      "jsonAgg": true,
+      "lateral": true,
+      "limit": true,
+      "orderBy": true,
+      "returning": true
+    },
+    "sql": {
+      "checkConstraint": true,
+      "defaultInInsert": true,
+      "enums": true,
+      "forShare": true,
+      "forUpdate": true,
+      "insertOnConflictSkip": true,
+      "insertOnConflictTarget": true,
+      "insertOnConflictWithoutTarget": true,
+      "lateral": true,
+      "lockNowait": true,
+      "lockOf": true,
+      "lockSkipLocked": true,
+      "returning": true,
+      "scalarList": true
+    }
+  },
+  "extensions": {},
+  "meta": {},
+  "_generated": {
+    "warning": "⚠️  GENERATED FILE - DO NOT EDIT",
+    "message": "This file is automatically generated by \"prisma contract emit\".",
+    "regenerate": "To regenerate, run: prisma contract emit"
+  }
+}
