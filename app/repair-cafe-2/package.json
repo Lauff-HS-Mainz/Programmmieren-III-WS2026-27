@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "next": "16.4.3",
+    "prisma": "8.0.0-rc.34",
     "react": "19.3.0",
     "react-dom": "19.3.0"
   },

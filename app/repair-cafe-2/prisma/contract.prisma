@@ -1,0 +1,359 @@
+// use prisma-8
+
+// Domain model, see "Domain model" and "Epics" in CLAUDE.md.
+// One section per epic. Change only your epic's section.
+// Roles (Client, Repairer, Receptionist, Helper) are derived per event and never stored.
+
+// ─── Shared ──────────────────────────────────────────────────────────────────
+model mixin Timestamps {
+  createdAt temporal.CreatedAt
+  updatedAt temporal.UpdatedAt
+}
+
+// ─── Identity & Access (epic:identity) ───────────────────────────────────────
+
+// Volunteers and visitors. A Volunteer is a Person with isVolunteer; a Visitor is
+// a Person who brings items (owner of a RepairRequest). isVolunteer and
+// isOrganizer are the only stored flags; only organizers change them.
+model Person {
+  id                 String                  @id @onCreate(uuid(7))
+  salutation         Salutation
+  // Trimmed, 1–50 characters. The full name is computed, never stored (#65).
+  firstName          String
+  lastName           String
+  // Optional for walk-in visitors; stored in lower case.
+  email              String?                 @unique
+  phone              String?
+  isVolunteer        Boolean                 @default(false)
+  isOrganizer        Boolean                 @default(false)
+  // Administrator (#231): changes the app's settings later; independent of the
+  // organizer level, but always a volunteer.
+  isAdministrator    Boolean                 @default(false)
+  // Required by Better Auth, which maps its user model to Person.
+  emailVerified      Boolean                 @default(false)
+  // Archived (#171): hidden in the person list; always a visitor (no flags).
+  archivedAt         TimestamptzTemporal?
+  +Timestamps
+
+  receptionistEvents Event[]
+  participations     EventParticipation[]    @relation("ParticipationVolunteer")
+  participationsSet  EventParticipation[]    @relation("ParticipationSetBy")
+  repairRequests     RepairRequest[]
+  repairAttempts     RepairAttempt[]
+  repairLogEntries   RepairRequestLogEntry[]
+  repairPhotos       RepairPhoto[]
+  volunteerSkills    VolunteerSkill[]
+
+  @@check(expression: sql`NOT "isOrganizer" OR "isVolunteer"`, name: "person_organizer_is_volunteer")
+  @@check(expression: sql`NOT "isAdministrator" OR "isVolunteer"`, name: "person_administrator_is_volunteer")
+  @@check(expression: sql`"archivedAt" IS NULL OR NOT "isVolunteer"`, name: "person_archived_is_visitor")
+  @@check(expression: sql`"email" IS NULL OR "email" = lower("email")`, name: "person_email_lower_case")
+  @@check(expression: sql`char_length("firstName") BETWEEN 1 AND 50`, name: "person_first_name_length")
+  @@check(expression: sql`char_length("lastName") BETWEEN 1 AND 50`, name: "person_last_name_length")
+}
+
+// How emails greet a person. MX and PREFER_NOT_TO_SAY: no salutation, full name.
+enum Salutation {
+  @@type("pg/text@1")
+  MR = "MR"
+  MS = "MS"
+  MX = "MX"
+  PREFER_NOT_TO_SAY = "PREFER_NOT_TO_SAY"
+}
+
+// ─── Event Management (epic:events) ──────────────────────────────────────────
+model Event {
+  id             String               @id @onCreate(uuid(7))
+  date           Date
+  // Same day: endTime after startTime (#78).
+  startTime      Time
+  endTime        Time
+  location       String
+  // Stored only IN_PREPARATION or ACTIVE (set by an organizer); ONGOING and
+  // FINISHED are derived from the time (#112). Visitors see ACTIVE events only.
+  status         EventStatus          @default(IN_PREPARATION)
+  // Empty until set; warn if the event starts without one. Must be a volunteer.
+  receptionistId String?
+  receptionist   Person?              @relation(fields: [receptionistId], references: [id], onDelete: SetNull)
+  +Timestamps
+
+  participations EventParticipation[]
+  repairAttempts RepairAttempt[]
+
+  @@index([date])
+  @@index([receptionistId])
+  @@check(expression: sql`"endTime" > "startTime"`, name: "event_end_after_start")
+}
+
+enum EventStatus {
+  @@type("pg/text@1")
+  IN_PREPARATION = "IN_PREPARATION"
+  ACTIVE = "ACTIVE"
+}
+
+model EventParticipation {
+  eventId     String
+  event       Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  // Must be a volunteer.
+  volunteerId String
+  volunteer   Person  @relation("ParticipationVolunteer", fields: [volunteerId], references: [id], onDelete: Cascade)
+  // The volunteer's answer (#135): true = "Ich bin dabei" (signed up),
+  // false = "Ich kann nicht". No row = no answer yet.
+  available   Boolean @default(true)
+  // The organizer who set the answer for the volunteer (#223); null when the
+  // volunteer answered themselves.
+  setById     String?
+  setBy       Person? @relation("ParticipationSetBy", fields: [setById], references: [id], onDelete: SetNull)
+  +Timestamps
+
+  @@id([eventId, volunteerId])
+  @@index([volunteerId])
+}
+
+// ─── Repair Core (epic:repairs) ──────────────────────────────────────────────
+enum RepairAttemptStatus {
+  @@type("pg/text@1")
+  PLANNED = "PLANNED"
+  IN_PROGRESS = "IN_PROGRESS"
+  FINISHED = "FINISHED"
+  CANCELLED = "CANCELLED"
+}
+
+enum RepairOutcome {
+  @@type("pg/text@1")
+  REPAIRED = "REPAIRED"
+  PARTIALLY_REPAIRED = "PARTIALLY_REPAIRED"
+  NOT_REPAIRABLE = "NOT_REPAIRABLE"
+}
+
+// Independent of any event; can span several events.
+// Status is derived from its attempts, not stored.
+model RepairRequest {
+  id                  String               @id @onCreate(uuid(7))
+  visitorId           String
+  visitor             Person               @relation(fields: [visitorId], references: [id])
+  item                String
+  description         String
+  // Set by the repairer when stopping an attempt that stays IN_PROGRESS (#13);
+  // with an IN_PROGRESS attempt the request is BLOCKED.
+  waitingForSparePart Boolean              @default(false)
+  // Withdrawn by the visitor or a volunteer (#100): the request is CLOSED;
+  // reason and reopening are recorded in the log.
+  withdrawn           Boolean              @default(false)
+  +Timestamps
+
+  repairAttempts      RepairAttempt[]
+  photos              RepairRequestPhoto[]
+  requiredSkills      RequiredSkill[]
+
+  @@index([visitorId])
+}
+
+// A photo of the item, attached when the request was registered (#147).
+// Resized and stored as JPEG; the original upload is not kept. The bytes live
+// here, in their own table, so request queries never load them.
+model RepairRequestPhoto {
+  id                String                 @id @onCreate(uuid(7))
+  repairRequestId   String
+  repairRequest     RepairRequest          @relation(fields: [repairRequestId], references: [id], onDelete: Cascade)
+  // Order of upload, starting at 0.
+  position          Int
+  // JPEG, long edge at most 2000 px.
+  image             Bytes
+  // JPEG, long edge at most 400 px.
+  thumbnail         Bytes
+  width             Int
+  height            Int
+  sizeBytes         Int
+  // The PHOTOS_ADDED log entry that added it (#151); empty for photos of the registration.
+  addedByLogEntryId String?
+  addedByLogEntry   RepairRequestLogEntry? @relation(fields: [addedByLogEntryId], references: [id], onDelete: SetNull)
+  +Timestamps
+
+  @@index([repairRequestId, position])
+  @@index([addedByLogEntryId])
+}
+
+// Belongs to an event; a request can have several attempts.
+// The planned attempts of an event ordered by scheduledStart form the waitlist.
+model RepairAttempt {
+  id              String                  @id @onCreate(uuid(7))
+  repairRequestId String
+  repairRequest   RepairRequest           @relation(fields: [repairRequestId], references: [id], onDelete: Cascade)
+  // Empty for a repair documented outside of an event (#17).
+  eventId         String?
+  // Deleted with their event; the trigger repair_attempt_delete_only_planned
+  // (#80) refuses deleting attempts that are not PLANNED.
+  event           Event?                  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  // Must be a volunteer.
+  repairerId      String
+  repairer        Person                  @relation(fields: [repairerId], references: [id])
+  // Time on the event day; only with an event.
+  scheduledStart  Time?
+  // In minutes; only with an event.
+  plannedDuration Int?
+  // The time slot (start, duration) is locked (#214): set when the visitor is
+  // told the appointment, toggled by organizers; only meaningful while PLANNED.
+  timeLocked      Boolean                 @default(false)
+  startedAt       TimestamptzTemporal?
+  finishedAt      TimestamptzTemporal?
+  status          RepairAttemptStatus     @default(PLANNED)
+  // Only set when status is FINISHED.
+  outcome         RepairOutcome?
+  notes           String?
+  +Timestamps
+
+  logEntries      RepairRequestLogEntry[]
+  photos          RepairPhoto[]
+
+  @@index([repairRequestId])
+  @@index([eventId, scheduledStart])
+  @@index([repairerId])
+  // With an event: planned. Without an event (#17): only documented afterwards,
+  // FINISHED with outcome and finishedAt, no planning.
+  @@check(expression: sql`"eventId" IS NULL OR ("scheduledStart" IS NOT NULL AND "plannedDuration" IS NOT NULL AND "plannedDuration" > 0)`, name: "repair_attempt_event_planned")
+  @@check(expression: sql`"eventId" IS NOT NULL OR ("scheduledStart" IS NULL AND "plannedDuration" IS NULL AND "finishedAt" IS NOT NULL AND "status" = 'FINISHED' AND "outcome" IS NOT NULL)`, name: "repair_attempt_outside_event_documented")
+  @@check(expression: sql`"outcome" IS NULL OR "status" = 'FINISHED'`, name: "repair_attempt_outcome_only_when_finished")
+}
+
+enum RepairRequestLogKind {
+  @@type("pg/text@1")
+  CREATED = "CREATED"
+  SCHEDULED = "SCHEDULED"
+  VISITOR_NOTIFIED = "VISITOR_NOTIFIED"
+  NOTE = "NOTE"
+  // A repair documented outside of an event (#17), with its attempt.
+  DOCUMENTED_OUTSIDE_EVENT = "DOCUMENTED_OUTSIDE_EVENT"
+  // The request was withdrawn (optional reason) or reopened (comment), #100.
+  WITHDRAWN = "WITHDRAWN"
+  REOPENED = "REOPENED"
+  // At least one photo of the registration could not be stored (#147); no text.
+  PHOTO_UPLOAD_FAILED = "PHOTO_UPLOAD_FAILED"
+  // Photos added or deleted after registration (#151), with the author; no text.
+  PHOTOS_ADDED = "PHOTOS_ADDED"
+  PHOTO_DELETED = "PHOTO_DELETED"
+  // A planned attempt was changed or taken out of the planning after the
+  // visitor was told (#198), with the attempt; no text.
+  RESCHEDULED = "RESCHEDULED"
+  UNSCHEDULED = "UNSCHEDULED"
+}
+
+// Append-only history of a repair request (#50). System entries store the kind
+// and references; the text is rendered through next-intl. Only notes store text.
+model RepairRequestLogEntry {
+  id              String               @id @onCreate(uuid(7))
+  repairRequestId String
+  repairRequest   RepairRequest        @relation(fields: [repairRequestId], references: [id], onDelete: Cascade)
+  kind            RepairRequestLogKind
+  // Who did it; empty for the system or after the person was deleted.
+  authorId        String?
+  author          Person?              @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  // For SCHEDULED and VISITOR_NOTIFIED.
+  attemptId       String?
+  attempt         RepairAttempt?       @relation(fields: [attemptId], references: [id], onDelete: SetNull)
+  // Photos this PHOTOS_ADDED entry added (#151).
+  addedPhotos     RepairRequestPhoto[]
+  // Only for NOTE.
+  text            String?
+  +Timestamps
+
+  @@index([repairRequestId, createdAt])
+  @@index([authorId])
+  @@index([attemptId])
+  // NOTE and REOPENED always have text, WITHDRAWN may (optional reason), all other kinds never (#100).
+  @@check(expression: sql`("kind" IN ('NOTE', 'REOPENED') AND "text" IS NOT NULL) OR "kind" = 'WITHDRAWN' OR ("kind" NOT IN ('NOTE', 'REOPENED', 'WITHDRAWN') AND "text" IS NULL)`, name: "repair_log_text_by_kind")
+  @@check(expression: sql`"text" IS NULL OR char_length("text") BETWEEN 1 AND 2000`, name: "repair_log_text_length")
+}
+
+// ─── Repairer Workbench (epic:workbench) ─────────────────────────────────────
+
+// A photo a repairer took during a repair attempt (#150). Resized and stored
+// as JPEG like RepairRequestPhoto; the author is cleared when the person is
+// deleted (data deletion).
+model RepairPhoto {
+  id              String        @id @onCreate(uuid(7))
+  repairAttemptId String
+  repairAttempt   RepairAttempt @relation(fields: [repairAttemptId], references: [id], onDelete: Cascade)
+  authorId        String?
+  author          Person?       @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  // JPEG, long edge at most 2000 px.
+  image           Bytes
+  // JPEG, long edge at most 400 px.
+  thumbnail       Bytes
+  width           Int
+  height          Int
+  sizeBytes       Int
+  +Timestamps
+
+  @@index([repairAttemptId])
+  @@index([authorId])
+}
+
+// ─── Skills (epic:skills) ────────────────────────────────────────────────────
+
+// BASIC < ADVANCED < EXPERT (#160). "None" is not stored: no row means none.
+enum SkillLevel {
+  @@type("pg/text@1")
+  BASIC = "BASIC"
+  ADVANCED = "ADVANCED"
+  EXPERT = "EXPERT"
+}
+
+// A competence in the skill catalog (#160), hierarchical (any depth; the
+// starter catalog uses two levels). Names are data, not translations, because
+// organizers will edit them: German required, English optional (German is the
+// fallback).
+model Skill {
+  id              String           @id @onCreate(uuid(7))
+  parentId        String?
+  parent          Skill?           @relation("SkillTree", fields: [parentId], references: [id], onDelete: Restrict)
+  nameDe          String
+  nameEn          String?
+  // Order among siblings.
+  position        Int
+  // Archived (#167): not offered in the forms, but kept on existing ratings
+  // and requirements (shown "(archiviert)") and still counted in matching.
+  archived        Boolean          @default(false)
+  +Timestamps
+
+  children        Skill[]          @relation("SkillTree")
+  volunteerSkills VolunteerSkill[]
+  requiredSkills  RequiredSkill[]
+
+  @@index([parentId, position])
+  // The German name is unique among siblings (also among top-level skills).
+  @@index(expression: sql`COALESCE("parentId", ''), "nameDe"`, unique: true, name: "skill_name_unique_among_siblings")
+  @@check(expression: sql`char_length("nameDe") BETWEEN 1 AND 50`, name: "skill_name_de_length")
+  @@check(expression: sql`"nameEn" IS NULL OR char_length("nameEn") BETWEEN 1 AND 50`, name: "skill_name_en_length")
+}
+
+// A volunteer's own rating of a skill (#160). No row: not rated, the nearest
+// rated ancestor's level carries over (#175); empty level: explicit "Keine",
+// which stops the carry-over.
+model VolunteerSkill {
+  volunteerId String
+  volunteer   Person      @relation(fields: [volunteerId], references: [id], onDelete: Cascade)
+  skillId     String
+  skill       Skill       @relation(fields: [skillId], references: [id], onDelete: Restrict)
+  level       SkillLevel?
+  +Timestamps
+
+  @@id([volunteerId, skillId])
+  @@index([skillId])
+}
+
+// A skill a repair request needs, with the minimum level (#160).
+model RequiredSkill {
+  repairRequestId String
+  repairRequest   RepairRequest @relation(fields: [repairRequestId], references: [id], onDelete: Cascade)
+  skillId         String
+  skill           Skill         @relation(fields: [skillId], references: [id], onDelete: Restrict)
+  minimumLevel    SkillLevel
+  // Suggested by the AI (#166): shown "(Vorschlag)" until a volunteer saves
+  // the tagging page, which confirms all tags of the request.
+  suggested       Boolean       @default(false)
+  +Timestamps
+
+  @@id([repairRequestId, skillId])
+  @@index([skillId])
+}
